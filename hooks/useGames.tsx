@@ -10,7 +10,6 @@ export const useGames = () => {
       try {
         const response = await fetch(`${apiUrl}/games`);
         const data = await response.json();
-        debugger;
         setGames(data);
       } catch (err) {
         setError(err.message);
