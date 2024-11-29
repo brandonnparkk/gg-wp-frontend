@@ -50,7 +50,7 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
   };
 
   async function createGame(gameData: GameData) {
-    const apiUrl = process.env.API_URL as string;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
     try {
       const response = await fetch(apiUrl, {
         method: "POST",

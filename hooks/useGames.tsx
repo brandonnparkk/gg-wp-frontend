@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 export const useGames = () => {
   const [games, setGames] = useState([]);
   const [error, setError] = useState(null as unknown);
-  const apiUrl = process.env.API_URL as string;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
 
   useEffect(() => {
     const fetchGames = async () => {
