@@ -2,6 +2,19 @@
 import Image from "next/image";
 import { useGames } from '../hooks/useGames';
 
+type Player = {
+  name: string;
+  commander: string;
+};
+
+type Game = {
+  id: string;
+  game_name: string;
+  created_at: string;
+  ended_at: string | null;
+  players: Player[];
+};
+
 export default function Home() {
   const { games } = useGames();
 
@@ -23,7 +36,7 @@ export default function Home() {
           <h1 className="text-2xl font-semibold">Recent Games</h1>
           {games?.length > 0 ?
           <div className="flex flex-col gap-6">
-            {games.map((g: any) => {
+            {games.map((g: Game) => {
               return (
                 <div className="bg-white shadow-md rounded-lg p-6 space-y-4" key={g.id}>
                   <div className="flex flex-col">
