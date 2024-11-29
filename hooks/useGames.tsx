@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 export const useGames = () => {
   const [games, setGames] = useState([]);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null as unknown);
   const apiUrl = process.env.API_URL as string;
 
   useEffect(() => {
@@ -11,8 +11,12 @@ export const useGames = () => {
         const response = await fetch(`${apiUrl}/games`);
         const data = await response.json();
         setGames(data);
-      } catch (err) {
-        setError(err.message);
+      } catch (error: unknown) {
+        if (typeof error === "string") {
+          setError(error.toUpperCase());
+        } else if (error instanceof Error) {
+          setError(error.message);
+        }
       }
     };
 
