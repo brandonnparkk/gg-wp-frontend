@@ -18,7 +18,7 @@ type Game = {
 export default function Home() {
   const { games } = useGames();
 
-  const convertTimestamp = (timestamp) => {
+  const convertTimestamp = (timestamp: Date) => {
     const date = new Date(timestamp);
 
     const year = date.getFullYear();
