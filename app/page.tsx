@@ -5,6 +5,8 @@ import { useGames } from '../hooks/useGames';
 type Player = {
   name: string;
   commander: string;
+  life_total?: number;
+  suggestions?: string[];
 };
 
 type Game = {
@@ -33,7 +35,7 @@ export default function Home() {
     <>
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)] gap-4">
-          <h1 className="text-2xl font-semibold">Recent Games</h1>
+          <h1 className="text-2xl font-semibold">Recent Games In Progress</h1>
           {games?.length > 0 ?
           <div className="flex flex-col gap-6">
             {games.map((g: Game) => {
@@ -49,6 +51,7 @@ export default function Home() {
                       <div className="flex flex-col justify-between bg-gray-50 rounded-lg p-4 shadow-sm" key={index}>
                         <span className="font-medium text-gray-700">{p.name}</span>
                         <span className="text-sm text-gray-500">{`Commander: ${p.commander}`}</span>
+                        {p.life_total ? <span className="text-sm text-gray-500">{`Life Total: ${p.life_total}`}</span> : ''}
                       </div>
                     );
                   })}

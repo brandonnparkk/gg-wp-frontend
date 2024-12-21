@@ -1,6 +1,10 @@
-import React, { useState, MouseEvent } from "react";
+import React, { useState, useEffect, MouseEvent, ChangeEvent } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
+import Select, { SingleValue } from "react-select";
+
+import { fetchCardSuggestions } from "../../hooks/useScryfall";
+import useDebounce from "../../hooks/useDebounce";
 
 interface MultiStepModalProps {
   isOpen: boolean;
@@ -17,13 +21,43 @@ interface GameData {
   players: PlayerData[];
 }
 
+interface DropdownOption {
+  value: string,
+  label: string,
+}
+
 const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
   const { isOpen, onClose } = props;
   const [step, setStep] = useState(1);
   const [numberOfPlayers, setNumberOfPlayers] = useState(4);
   const [gameName, setGameName] = useState("");
-  const [players, setPlayers] = useState([{ name: "", commander: "" }]);
+  const [players, setPlayers] = useState([
+    { name: "", commander: "", suggestions: [], life_total: 40 },
+  ]);
   const [startingLife, setStartingLife] = useState(40);
+  const [query, setQuery] = useState<string[]>(Array(players.length).fill(""));
+  const debouncedQuery = useDebounce(query, 500);
+
+  useEffect(() => {
+    debouncedQuery.forEach((q, index) => {
+      if (!q) return; // Skip empty queries
+
+      const fetchData = async () => {
+        try {
+          const suggestions = await fetchCardSuggestions(q); // API call
+          setPlayers((prevPlayers) => {
+            const updatedPlayers = [...prevPlayers];
+            updatedPlayers[index].suggestions = suggestions; // Update suggestions
+            return updatedPlayers;
+          });
+        } catch (error) {
+          console.error(`Error fetching data for player ${index + 1}:`, error);
+        }
+      };
+
+      fetchData();
+    });
+  }, [debouncedQuery]);
 
   const handleNext = () => {
     if (step === 1) {
@@ -31,8 +65,18 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
         Array.from({ length: numberOfPlayers }, () => ({
           name: "",
           commander: "",
+          suggestions: [],
+          life_total: 40
         }))
       );
+    } else if (step === 3) {
+      setPlayers((prevPlayers) => {
+        const updatedPlayers = [...prevPlayers];
+        updatedPlayers.map((p) => {
+          return p.suggestions = [];
+        });
+        return updatedPlayers;
+      });
     }
     setStep(step + 1);
   };
@@ -44,8 +88,7 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
   const handleClose = () => {
     setStep(1);
     setNumberOfPlayers(2);
-    setPlayers([{ name: "", commander: "" }]);
-    setStartingLife(40);
+    setPlayers([{ name: "", commander: "", suggestions: [], life_total: 40 }]);
     onClose();
   };
 
@@ -67,7 +110,8 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
 
       const data = await response.json();
       console.log("Game created:", data);
-      return data; // Return data for further use if needed
+      onClose();
+      return data;
     } catch (error: unknown) {
       if (typeof error === "string") {
         console.error("Error creating game:", error.toUpperCase());
@@ -76,6 +120,25 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
       }
     }
   }
+
+  const handleCommanderSelect = (index: number, selectedOption: SingleValue<DropdownOption>) => {
+    setPlayers((prevPlayers) => {
+      const updatedPlayers = [...prevPlayers];
+      updatedPlayers[index].commander = selectedOption?.value || '';
+      return updatedPlayers;
+    });
+  };
+
+  const handleLifeTotal = (lifeTotal: number) => {
+    setStartingLife(lifeTotal);
+    setPlayers((prevPlayers) => {
+      const updatedPlayers = [...prevPlayers];
+      for (const player of updatedPlayers) {
+        player.life_total = lifeTotal;
+      }
+      return updatedPlayers;
+    });
+  };
 
   const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -114,6 +177,7 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
           <Dialog.Title className="text-black mb-4 font-bold text-2xl">
             Create New Game
           </Dialog.Title>
+          <Dialog.Description/>
 
           <DialogClose asChild>
             <button
@@ -159,37 +223,58 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
           )}
           {step === 3 && (
             <div className="flex flex-col max-h-dvh">
-              {players.map((_, index) => (
-                <div key={index} style={{ marginBottom: "1rem" }}>
-                  <label>
-                    Player {index + 1} Name:
-                    <input
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 placeholder-gray-500"
-                      type="text"
-                      value={players[index].name}
-                      onChange={(e) => {
-                        const newPlayers = [...players];
-                        newPlayers[index].name = e.target.value;
-                        setPlayers(newPlayers);
-                      }}
-                    />
-                  </label>
-                  <label style={{ marginLeft: "1rem" }}>
-                    Commander:
-                    <input
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 placeholder-gray-500"
-                      type="text"
-                      value={players[index].commander}
-                      onChange={(e) => {
-                        const newPlayers = [...players];
-                        newPlayers[index].commander = e.target.value;
-                        setPlayers(newPlayers);
-                      }}
-                      style={{ marginLeft: "0.5rem", padding: "0.3rem" }}
-                    />
-                  </label>
-                </div>
-              ))}
+              <div>
+                {players.map((player, index) => (
+                  <div key={index} style={{ marginBottom: "1rem" }}>
+                    <label>
+                      Player {index + 1} Name:
+                      <input
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 placeholder-gray-500"
+                        type="text"
+                        value={player.name}
+                        onChange={(e) => {
+                          const updatedPlayers = [...players];
+                          updatedPlayers[index].name = e.target.value;
+                          setPlayers(updatedPlayers);
+                        }}
+                      />
+                    </label>
+                    <label style={{ marginLeft: "1rem" }}>
+                      Commander:
+                      <div className="w-full">
+                        <Select
+                          classNamePrefix="react-select"
+                          options={
+                            player?.suggestions?.length > 0
+                              ? player.suggestions.map((suggestion) => ({
+                                  value: suggestion,
+                                  label: suggestion,
+                                }))
+                              : []
+                          }
+                          value={{
+                            value: player.commander,
+                            label: player.commander,
+                          }}
+                          onInputChange={(inputValue) => {
+                            // Update query for the specific player
+                            setQuery((prevQuery) => {
+                              const updatedQuery = [...prevQuery];
+                              updatedQuery[index] = inputValue;
+                              return updatedQuery;
+                            });
+                          }}
+                          onChange={(selectedOption) =>
+                            handleCommanderSelect(index, selectedOption)
+                          }
+                          placeholder="Search for a commander..."
+                          isSearchable
+                        />
+                      </div>
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           {step === 4 && (
@@ -202,7 +287,7 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
                   min="20"
                   value={startingLife}
                   onChange={(e) =>
-                    setStartingLife(parseInt(e.target.value, 10))
+                    handleLifeTotal(parseInt(e.target.value, 10))
                   }
                 />
               </label>

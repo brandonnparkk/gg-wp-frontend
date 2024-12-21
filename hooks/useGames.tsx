@@ -8,7 +8,7 @@ export const useGames = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`${apiUrl}/games`);
+        const response = await fetch(`${apiUrl}/games-in-progress`);
         const data = await response.json();
         setGames(data);
       } catch (error: unknown) {
