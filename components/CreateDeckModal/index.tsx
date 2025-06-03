@@ -14,10 +14,18 @@ import {
 } from '@mui/material';
 import { fetchCardSuggestions, fetchCardDetails } from '@/hooks/useScryfall';
 
+type Deck = {
+  name: string,
+  colors: string[],
+  visibility: string,
+  lastUpdated: string
+};
+
 type CreateModalProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (deck: { name: string; format: string; commander: string }) => void;
+  onCreate: (deck: Deck) => void;
+
 };
 
 export default function CreateDeckModal({ open, onClose, onCreate }: CreateModalProps) {
@@ -142,8 +150,8 @@ export default function CreateDeckModal({ open, onClose, onCreate }: CreateModal
               onInputChange={(event, newInputValue) => {
                 setQuery(newInputValue);
               }}
-              onChange={(event, value) => {
-                setDeck((prev) => ({ ...prev, commander: value }));
+              onChange={(event, newValue) => {
+                setDeck((prev) => ({ ...prev, commander: newValue ?? '' }));
               }}
               sx={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Commander" />}

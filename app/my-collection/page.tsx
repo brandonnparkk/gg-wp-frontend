@@ -6,6 +6,13 @@ import AddIcon from '@mui/icons-material/Add';
 
 import CreateDeckModal from '@/components/CreateDeckModal';
 
+type Deck = {
+  name: string,
+  colors: string[],
+  visibility: string,
+  lastUpdated: string
+};
+
 const MyCollection = () => {
   const mockedDecks = [
     {
@@ -35,8 +42,7 @@ const MyCollection = () => {
     setModalOpen(!modalOpen);
   }
 
-  const handleCreateDeck = (newDeck) => {
-    console.log("New deck created:", newDeck);
+  const handleCreateDeck = (newDeck: Deck) => {
     setDecks((prev) => [...prev, newDeck]);
   };
 
