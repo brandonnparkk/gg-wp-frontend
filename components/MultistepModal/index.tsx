@@ -149,14 +149,14 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
     //   players,
     // };
 
-    const gameData = {
-      name: gameName,
-      ended_at: null, // or a valid ISO string like "2025-04-21T19:00:00Z"
-      winner_id: null, // or a valid UUID string like "c3a3227b-1e1e-4b6c-82d3-1c1112f41f31"
-      participants: players
-    };
+    // const gameData = {
+    //   name: gameName,
+    //   ended_at: null, // or a valid ISO string like "2025-04-21T19:00:00Z"
+    //   winner_id: null, // or a valid UUID string like "c3a3227b-1e1e-4b6c-82d3-1c1112f41f31"
+    //   participants: players
+    // };
 
-    await createGame(gameData);
+    // await createGame(gameData);
   };
 
   return (
