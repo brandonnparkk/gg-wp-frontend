@@ -18,13 +18,13 @@ interface CardModel {
   back_image_url?: string
 }
 
-const colorToIdentityMap = {
-  B: "Black",
-  R: "Red",
-  W: "White",
-  G: "Green",
-  U: "Blue",
-}
+// const colorToIdentityMap = {
+//   B: "Black",
+//   R: "Red",
+//   W: "White",
+//   G: "Green",
+//   U: "Blue",
+// }
 
 const CardSearch = () => {
   const [query, setQuery] = useState("");
