@@ -1,22 +1,23 @@
 "use client"
 import React, { useState } from 'react'
-import { useVectorSearch } from '@/hooks/useVectorSearch';
-import MTGCard from '@/components/MTGCard';
-import { Grid, TextField, Button } from '@mui/material';
+// import { useVectorSearch } from '@/hooks/useVectorSearch';
+// import MTGCard from '@/components/MTGCard';
+// import { Grid, TextField, Button } from '@mui/material';
+import { TextField } from '@mui/material';
 
-interface CardModel {
-  name: string,
-  mana_cost: string,
-  toughness: string,
-  mana_value: string,
-  text: string,
-  power: string,
-  rarity: string,
-  type: string,
-  colors: string,
-  front_image_url?: string,
-  back_image_url?: string
-}
+// interface CardModel {
+//   name: string,
+//   mana_cost: string,
+//   toughness: string,
+//   mana_value: string,
+//   text: string,
+//   power: string,
+//   rarity: string,
+//   type: string,
+//   colors: string,
+//   front_image_url?: string,
+//   back_image_url?: string
+// }
 
 // const colorToIdentityMap = {
 //   B: "Black",
@@ -28,16 +29,16 @@ interface CardModel {
 
 const CardSearch = () => {
   const [query, setQuery] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const { results, error, loading } = useVectorSearch(searchQuery); // Hook at top level
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const { results, error, loading } = useVectorSearch(searchQuery); // Hook at top level
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setQuery(e.target.value);
   }
 
-  const handleSearch = (): void => {
-    setSearchQuery(query.trim().toLowerCase());
-  }
+  // const handleSearch = (): void => {
+  //   setSearchQuery(query.trim().toLowerCase());
+  // }
 
   // remove later
   // const replaceManaCost = (manaCost: string) => {
@@ -61,7 +62,7 @@ const CardSearch = () => {
             value={query}
             onChange={handleInputChange}
           />
-          <Button onClick={handleSearch} variant="contained">Search</Button>
+          {/* <Button onClick={handleSearch} variant="contained">Search</Button> */}
         </div>
       </div>
       {/* <input
@@ -71,19 +72,14 @@ const CardSearch = () => {
       /> */}
       {/* <button onClick={handleSearch}>Search</button> */}
 
-      {loading && <p>Searching...</p>}
-      {error && <p>Error: {error}</p>}
-      {/* {results?.metadatas[0]?.length > 0 && (
-        <ul>
-          {results.metadatas[0].map((doc: string, i: number) => (
-            <li key={i}>{doc}</li>
-          ))}
-        </ul>
-      )} */}
-      {results?.metadatas?.[0]?.length > 0 && (
+      {/* FIX ISSUE WITH nested metadatas object LATER */}
+      {/* {loading && <p>Searching...</p>}
+      {error && <p>Error: {error}</p>} */}
+      {/*
+       {results?.metadatas?.[0]?.length > 0 && (
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             {results.metadatas[0].map((doc: CardModel, i: number) => (
-              <Grid item xs={12} sm={6} md={3} key={i}>
+              <Grid key={i}>
                 <MTGCard
                   name={doc?.name}
                   frontImage={doc?.front_image_url}
@@ -92,7 +88,7 @@ const CardSearch = () => {
               </Grid>
             ))}
           </Grid>
-      )}
+      )} */}
     </div>
   )
 }
