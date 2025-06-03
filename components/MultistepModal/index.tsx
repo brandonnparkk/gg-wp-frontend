@@ -5,22 +5,22 @@ import Select, { SingleValue } from "react-select";
 
 import { fetchCardSuggestions } from "../../hooks/useScryfall";
 import useDebounce from "../../hooks/useDebounce";
-import { getApiUrl } from '../../utils/apiConfig';
+// import { getApiUrl } from '../../utils/apiConfig';
 
 interface MultiStepModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface PlayerData {
-  name: string;
-  commander_name: string;
-}
+// interface PlayerData {
+//   name: string;
+//   commander_name: string;
+// }
 
-interface GameData {
-  game_name: string;
-  players: PlayerData[];
-}
+// interface GameData {
+//   game_name: string;
+//   players: PlayerData[];
+// }
 
 interface DropdownOption {
   value: string,
