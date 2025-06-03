@@ -85,7 +85,7 @@ function Page() {
                     type="number"
                     min="0"
                     value={p?.life_total}
-                    onChange={(e) => handleLifeTotal}
+                    onChange={() => handleLifeTotal}
                   ></input>
                 ) : <div>{p?.life_total}</div>}
               </div>

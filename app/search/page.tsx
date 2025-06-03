@@ -39,13 +39,14 @@ const CardSearch = () => {
     setSearchQuery(query.trim().toLowerCase());
   }
 
-  const replaceManaCost = (manaCost: string) => {
-    if (!manaCost) return manaCost;
+  // remove later
+  // const replaceManaCost = (manaCost: string) => {
+  //   if (!manaCost) return manaCost;
 
-    return manaCost.split('').map((char) => {
-      return colorToIdentityMap[char] || char; // Replace symbol with color name or keep the original symbol
-    }).join('');
-  };
+  //   return manaCost.split('').map((char) => {
+  //     return colorToIdentityMap[char] || char; // Replace symbol with color name or keep the original symbol
+  //   }).join('');
+  // };
 
   return (
     <div>
