@@ -1,4 +1,5 @@
 "use client"
+import { useRouter } from 'next/navigation'
 import Image from "next/image";
 import { useGames } from '../hooks/useGames';
 
@@ -11,7 +12,7 @@ type Player = {
 
 type Game = {
   id: string;
-  game_name: string;
+  name: string;
   created_at: string;
   ended_at: string | null;
   players: Player[];
@@ -19,6 +20,7 @@ type Game = {
 
 export default function Home() {
   const { games } = useGames();
+  const router = useRouter();
 
   const convertTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -31,6 +33,12 @@ export default function Home() {
     return formattedDate;
   }
 
+  const handleGameClick = (gameId?: string) => {
+    if (gameId) {
+      router.push(`/game/${gameId}`)
+    }
+  }
+
   return (
     <>
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -40,13 +48,13 @@ export default function Home() {
           <div className="flex flex-col gap-6">
             {games.map((g: Game) => {
               return (
-                <div className="bg-white shadow-md rounded-lg p-6 space-y-4" key={g.id}>
+                <div onClick={() => handleGameClick(g?.id)} className="cursor-pointer bg-white shadow-md rounded-lg p-6 space-y-4" key={g.id}>
                   <div className="flex flex-col">
-                    <span className="text-lg font-semibold text-gray-800">{g.game_name}</span>
+                    <span className="text-lg font-semibold text-gray-800">{g.name}</span>
                     <span className={`text-sm ${g.ended_at ? 'text-gray-500' : 'text-green-700'}`}>{g.ended_at ? `Ended: ${convertTimestamp(g.created_at)}` : 'In Progress'}</span>
                     <span className="text-sm text-gray-400">{`Created: ${convertTimestamp(g.created_at)}`}</span>
                   </div>
-                  { g.players.map((p, index) => {
+                  {/* { g.players.map((p, index) => {
                     return (
                       <div className="flex flex-col justify-between bg-gray-50 rounded-lg p-4 shadow-sm" key={index}>
                         <span className="font-medium text-gray-700">{p.name}</span>
@@ -54,7 +62,7 @@ export default function Home() {
                         {p.life_total ? <span className="text-sm text-gray-500">{`Life Total: ${p.life_total}`}</span> : ''}
                       </div>
                     );
-                  })}
+                  })} */}
                 </div>
               );
             })}
