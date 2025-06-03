@@ -29,6 +29,7 @@ export default function RootLayout({
     { href: "/", label: "Home" },
     { href: "/new-game", label: "Start a Game" },
     { href: "/my-collection", label: "My Collection" },
+    { href: "/search", label: "MTG Card Search" },
   ];
 
   return (

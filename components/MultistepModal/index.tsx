@@ -5,21 +5,22 @@ import Select, { SingleValue } from "react-select";
 
 import { fetchCardSuggestions } from "../../hooks/useScryfall";
 import useDebounce from "../../hooks/useDebounce";
+// import { getApiUrl } from '../../utils/apiConfig';
 
 interface MultiStepModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface PlayerData {
-  name: string;
-  commander: string;
-}
+// interface PlayerData {
+//   name: string;
+//   commander_name: string;
+// }
 
-interface GameData {
-  game_name: string;
-  players: PlayerData[];
-}
+// interface GameData {
+//   game_name: string;
+//   players: PlayerData[];
+// }
 
 interface DropdownOption {
   value: string,
@@ -32,7 +33,7 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
   const [numberOfPlayers, setNumberOfPlayers] = useState(4);
   const [gameName, setGameName] = useState("");
   const [players, setPlayers] = useState([
-    { name: "", commander: "", suggestions: [], life_total: 40 },
+    { name: "", commander_name: "", suggestions: [], life_total: 40 },
   ]);
   const [startingLife, setStartingLife] = useState(40);
   const [query, setQuery] = useState<string[]>(Array(players.length).fill(""));
@@ -64,7 +65,7 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
       setPlayers(
         Array.from({ length: numberOfPlayers }, () => ({
           name: "",
-          commander: "",
+          commander_name: "",
           suggestions: [],
           life_total: 40
         }))
@@ -88,43 +89,43 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
   const handleClose = () => {
     setStep(1);
     setNumberOfPlayers(2);
-    setPlayers([{ name: "", commander: "", suggestions: [], life_total: 40 }]);
+    setPlayers([{ name: "", commander_name: "", suggestions: [], life_total: 40 }]);
     onClose();
   };
 
-  async function createGame(gameData: GameData) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(gameData),
-      });
+  // async function createGame(gameData: GameData) {
+  //   const apiUrl = getApiUrl() as string;
+  //   try {
+  //     const response = await fetch(`${apiUrl}/game`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(gameData),
+  //     });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to create game");
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.detail || "Failed to create game");
+  //     }
 
-      const data = await response.json();
-      console.log("Game created:", data);
-      onClose();
-      return data;
-    } catch (error: unknown) {
-      if (typeof error === "string") {
-        console.error("Error creating game:", error.toUpperCase());
-      } else if (error instanceof Error) {
-        console.error("Error creating game:", error.message);
-      }
-    }
-  }
+  //     const data = await response.json();
+  //     console.log("Game created:", data);
+  //     onClose();
+  //     return data;
+  //   } catch (error: unknown) {
+  //     if (typeof error === "string") {
+  //       console.error("Error creating game:", error.toUpperCase());
+  //     } else if (error instanceof Error) {
+  //       console.error("Error creating game:", error.message);
+  //     }
+  //   }
+  // }
 
   const handleCommanderSelect = (index: number, selectedOption: SingleValue<DropdownOption>) => {
     setPlayers((prevPlayers) => {
       const updatedPlayers = [...prevPlayers];
-      updatedPlayers[index].commander = selectedOption?.value || '';
+      updatedPlayers[index].commander_name = selectedOption?.value || '';
       return updatedPlayers;
     });
   };
@@ -143,12 +144,19 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
   const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const gameData: GameData = {
-      game_name: gameName,
-      players,
-    };
+    // const gameData: GameData = {
+    //   game_name: gameName,
+    //   players,
+    // };
 
-    await createGame(gameData);
+    // const gameData = {
+    //   name: gameName,
+    //   ended_at: null, // or a valid ISO string like "2025-04-21T19:00:00Z"
+    //   winner_id: null, // or a valid UUID string like "c3a3227b-1e1e-4b6c-82d3-1c1112f41f31"
+    //   participants: players
+    // };
+
+    // await createGame(gameData);
   };
 
   return (
@@ -253,8 +261,8 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
                               : []
                           }
                           value={{
-                            value: player.commander,
-                            label: player.commander,
+                            value: player.commander_name,
+                            label: player.commander_name,
                           }}
                           onInputChange={(inputValue) => {
                             // Update query for the specific player
