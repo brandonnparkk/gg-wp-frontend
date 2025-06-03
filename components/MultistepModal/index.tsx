@@ -93,34 +93,34 @@ const MultiStepModal: React.FC<MultiStepModalProps> = (props) => {
     onClose();
   };
 
-  async function createGame(gameData: GameData) {
-    const apiUrl = getApiUrl() as string;
-    try {
-      const response = await fetch(`${apiUrl}/game`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(gameData),
-      });
+  // async function createGame(gameData: GameData) {
+  //   const apiUrl = getApiUrl() as string;
+  //   try {
+  //     const response = await fetch(`${apiUrl}/game`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(gameData),
+  //     });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to create game");
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.detail || "Failed to create game");
+  //     }
 
-      const data = await response.json();
-      console.log("Game created:", data);
-      onClose();
-      return data;
-    } catch (error: unknown) {
-      if (typeof error === "string") {
-        console.error("Error creating game:", error.toUpperCase());
-      } else if (error instanceof Error) {
-        console.error("Error creating game:", error.message);
-      }
-    }
-  }
+  //     const data = await response.json();
+  //     console.log("Game created:", data);
+  //     onClose();
+  //     return data;
+  //   } catch (error: unknown) {
+  //     if (typeof error === "string") {
+  //       console.error("Error creating game:", error.toUpperCase());
+  //     } else if (error instanceof Error) {
+  //       console.error("Error creating game:", error.message);
+  //     }
+  //   }
+  // }
 
   const handleCommanderSelect = (index: number, selectedOption: SingleValue<DropdownOption>) => {
     setPlayers((prevPlayers) => {
